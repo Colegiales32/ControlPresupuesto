@@ -1,19 +1,28 @@
 import { useState, useEffect } from "react";
-import { CircularProgressbar,buildStyles } from "react-circular-progressbar";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 
-export const ControlPresupuesto = ({ presupuesto, gastos,setGastos,setPresupuesto,setIsValidPresupuesto }) => {
+export const ControlPresupuesto = ({
+  presupuesto,
+  gastos,
+  setGastos,
+  setPresupuesto,
+  setIsValidPresupuesto,
+  presupuestoActualizado,
+  setPresupuestoActualizado,
+}) => {
   const [porcentaje, setPorcentaje] = useState(0);
   const [disponible, setDisponible] = useState(0);
   const [gastado, setGastado] = useState(0);
 
-  useEffect(() => {
-    const totalGastado = gastos.reduce(
-      (total, gasto) => gasto.importe + total,
-      0
-    );
-    const totalDisponible = presupuesto - totalGastado;
+  const totalGastado = gastos.reduce(
+    (total, gasto) => gasto.importe + total,
+    0
+  );
 
+  const totalDisponible = presupuesto - totalGastado;
+
+  useEffect(() => {
     const nuevoPorcentaje = (
       ((presupuesto - totalDisponible) / presupuesto) *
       100
@@ -22,8 +31,7 @@ export const ControlPresupuesto = ({ presupuesto, gastos,setGastos,setPresupuest
     setGastado(totalGastado);
     setDisponible(totalDisponible);
     setTimeout(() => {
-        setPorcentaje(nuevoPorcentaje)
-        
+      setPorcentaje(nuevoPorcentaje);
     }, 1000);
   }, [gastos]);
 
@@ -34,43 +42,70 @@ export const ControlPresupuesto = ({ presupuesto, gastos,setGastos,setPresupuest
     });
   };
 
-const handleResetApp = () => {
-    const resultado = confirm('¿Deseas reiniciar presupuesto y gastos?')
-    if(resultado){
-setGastos([])
-setPresupuesto(0)
-setIsValidPresupuesto(false)
+  const handleResetApp = () => {
+    const resultado = confirm("¿Deseas reiniciar presupuesto y gastos?");
+    if (resultado) {
+      setGastos([]);
+      setPresupuesto(0);
+      setIsValidPresupuesto(false);
     }
-}
+  };
+
+  const handleEditApp = (e) => {
+    e.preventDefault();
+    const presupuestoEdit = presupuesto + presupuestoActualizado;
+    const resultado = confirm("¿Deseas modificar el presupuesto?");
+    if (resultado) {
+      setPresupuesto(presupuestoEdit);
+      setPresupuestoActualizado(0);
+    }
+  };
 
   return (
     <div className="contenedor-presupuesto contenedor sombra dos-columnas">
       <div>
-        <CircularProgressbar 
-        styles={buildStyles({
-            pathColor:porcentaje > 100 ? '#DC2626' : '#3B82F6',
-            trailColor:'#F5F5F5',
-            textColor:porcentaje > 100 ? '#DC2626' : '#3B82F6'
-        })}
-        value={porcentaje} 
-        text={`${porcentaje}% Gastado`}
+        <CircularProgressbar
+          styles={buildStyles({
+            pathColor: porcentaje > 100 ? "#DC2626" : "#3B82F6",
+            trailColor: "#F5F5F5",
+            textColor: porcentaje > 100 ? "#DC2626" : "#3B82F6",
+          })}
+          value={porcentaje}
+          text={`${porcentaje}% Gastado`}
         />
       </div>
 
-      <div className="contenido-presupuesto">
-        <button 
-        className="reset-app"
-        type="button"
-        onClick={handleResetApp}>
-            Resetear App
+      <div className="editar-presupuesto sombra-editar">
+       
+          <form onSubmit={handleEditApp} className="formulario-editar">
+            <div className="campo">
+              <label className="label-editar">Agregar dinero</label>
+              <input
+                id="agregar-presupuesto"
+                type="number"
+                placeholder="Edita tu Presupuesto"
+                value={presupuestoActualizado}
+                onChange={(e) =>
+                  setPresupuestoActualizado(Number(e.target.value))
+                }
+              />
+            </div>
+            <input className="input-editar" type="submit" value="Agregar" />
+          </form>
+     
+
+        <button className="reset-app" type="button" onClick={handleResetApp}>
+          Resetear App
         </button>
+      </div>
+      <div>
         <p>
           <span>Presupuesto: </span>
           {formatearCantidad(presupuesto)}
         </p>
-        <p className={`${disponible < 0 ?'negativo': ''}`}>
+        <p className={`${disponible < 0 ? "negativo" : ""}`}>
           <span>Disponible: </span>
-          {formatearCantidad(disponible)}
+          {formatearCantidad(totalDisponible)}
         </p>
         <p>
           <span>Gastado: </span>

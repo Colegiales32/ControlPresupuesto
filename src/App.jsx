@@ -16,6 +16,7 @@ function App() {
   const [animarModal, setAnimarModal] = useState(false);
 
   const [gastoEditar, setGastoEditar] = useState({});
+  const [presupuestoActualizado, setPresupuestoActualizado] = useState(0);
 
 const [filtro,setFiltro] = useState('')
 const [gastosFiltrados,setGastosFiltrados] = useState([])
@@ -99,6 +100,8 @@ if(presupuestoLS > 0){
         setPresupuesto={setPresupuesto}
         isValidPresupuesto={isValidPresupuesto}
         setIsValidPresupuesto={setIsValidPresupuesto}
+        presupuestoActualizado={presupuestoActualizado}
+        setPresupuestoActualizado={setPresupuestoActualizado}
       />
       {isValidPresupuesto ? (
         <>
