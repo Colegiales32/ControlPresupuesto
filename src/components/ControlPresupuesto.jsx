@@ -61,13 +61,28 @@ export const ControlPresupuesto = ({
     }
   };
 
+  
+  useEffect(() => {
+    const nuevoPorcentaje = (
+      ((presupuesto - totalDisponible) / presupuesto) *
+      100
+    ).toFixed(2);
+
+    setGastado(totalGastado);
+    setDisponible(totalDisponible);
+    setTimeout(() => {
+      setPorcentaje(nuevoPorcentaje);
+    }, 1000);
+  }, [presupuesto]);
+
+
   return (
     <div className="contenedor-presupuesto contenedor sombra dos-columnas">
       <div>
         <CircularProgressbar
           styles={buildStyles({
             pathColor: porcentaje > 100 ? "#DC2626" : "#3B82F6",
-            trailColor: "#F5F5F5",
+            trailColor: "#bebebe",
             textColor: porcentaje > 100 ? "#DC2626" : "#3B82F6",
           })}
           value={porcentaje}
