@@ -8,6 +8,8 @@ import { generarId } from "./helpers";
 import IconoNuevoGasto from "./img/nuevo-gasto.svg";
 
 function App() {
+  const [mensaje,setMensaje] = useState('')
+
   const [presupuesto, setPresupuesto] = useState(Number(localStorage.getItem('presupuesto')?? 0));
   const [isValidPresupuesto, setIsValidPresupuesto] = useState(false);
   const [modal, setModal] = useState(false);
@@ -46,7 +48,7 @@ if(filtro) {
   const gastosFiltrados = gastos.filter(gasto => gasto.categoria === filtro)
 setGastosFiltrados(gastosFiltrados)
 }
-  }, [filtro])
+  }, [filtro,gastos])
   
 
   useEffect(() => {
@@ -102,6 +104,8 @@ if(presupuestoLS > 0){
         setIsValidPresupuesto={setIsValidPresupuesto}
         presupuestoActualizado={presupuestoActualizado}
         setPresupuestoActualizado={setPresupuestoActualizado}
+        mensaje ={mensaje}
+        setMensaje={setMensaje}
       />
       {isValidPresupuesto ? (
         <>

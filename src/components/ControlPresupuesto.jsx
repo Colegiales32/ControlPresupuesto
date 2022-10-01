@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import Mensaje from "./Mensaje";
 
 export const ControlPresupuesto = ({
   presupuesto,
@@ -10,6 +11,8 @@ export const ControlPresupuesto = ({
   setIsValidPresupuesto,
   presupuestoActualizado,
   setPresupuestoActualizado,
+  setMensaje,
+  mensaje,
 }) => {
   const [porcentaje, setPorcentaje] = useState(0);
   const [disponible, setDisponible] = useState(0);
@@ -55,13 +58,28 @@ export const ControlPresupuesto = ({
     e.preventDefault();
     const presupuestoEdit = presupuesto + presupuestoActualizado;
     const resultado = confirm("¿Deseas modificar el presupuesto?");
-    if (resultado) {
+    const escondido = document.getElementById('escondido')
+    const aparece = () => {
+      escondido.classList.remove('negativo-hidden')
+      escondido.classList.add('negativo-vista')
+    }
+    const desaparece=()=> {
+      escondido.classList.add('negativo-hidden')
+      escondido.classList.remove('negativo-vista')
+    }
+    if (presupuestoActualizado >= 1 && resultado) {
       setPresupuesto(presupuestoEdit);
       setPresupuestoActualizado(0);
+    } else if (presupuestoActualizado <= 1 && resultado) {
+     aparece()
+      setTimeout(() => {
+        desaparece();
+      }, 6000);
+
+      return;
     }
   };
 
-  
   useEffect(() => {
     const nuevoPorcentaje = (
       ((presupuesto - totalDisponible) / presupuesto) *
@@ -74,7 +92,6 @@ export const ControlPresupuesto = ({
       setPorcentaje(nuevoPorcentaje);
     }, 1000);
   }, [presupuesto]);
-
 
   return (
     <div className="contenedor-presupuesto contenedor sombra dos-columnas">
@@ -91,23 +108,25 @@ export const ControlPresupuesto = ({
       </div>
 
       <div className="editar-presupuesto sombra-editar">
-       
-          <form onSubmit={handleEditApp} className="formulario-editar">
-            <div className="campo">
-              <label className="label-editar">Agregar dinero</label>
-              <input
-                id="agregar-presupuesto"
-                type="number"
-                placeholder="Edita tu Presupuesto"
-                value={presupuestoActualizado}
-                onChange={(e) =>
-                  setPresupuestoActualizado(Number(e.target.value))
-                }
-              />
-            </div>
-            <input className="input-editar" type="submit" value="Agregar" />
-          </form>
-     
+        <form onSubmit={handleEditApp} className="formulario-editar">
+          <div className="campo">
+            <label className="label-editar">Agregar dinero</label>
+            <input
+              id="agregar-presupuesto"
+              type="number"
+              placeholder="Edita tu Presupuesto"
+              value={presupuestoActualizado}
+              onChange={(e) =>
+                setPresupuestoActualizado(Number(e.target.value))
+              }
+            />
+          </div>
+          <div className="lugar-mensaje">
+          <div className={`alerta negativo-hidden`} id='escondido'>Monto invalido</div>
+          </div>
+          <input className="input-editar" type="submit" value="Agregar" />
+
+        </form>
 
         <button className="reset-app" type="button" onClick={handleResetApp}>
           Resetear App

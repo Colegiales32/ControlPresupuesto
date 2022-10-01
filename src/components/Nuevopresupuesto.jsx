@@ -2,8 +2,8 @@ import { useState } from 'react'
 import Mensaje from './Mensaje'
 
 
-const Nuevopresupuesto = ({presupuesto, setPresupuesto,setIsValidPresupuesto}) => {
-    const [mensaje,setMensaje] = useState('')
+const Nuevopresupuesto = ({presupuesto, setPresupuesto,setIsValidPresupuesto,mensaje,setMensaje}) => {
+  
 
 const handlePresupuesto = (e) =>{
     e.preventDefault();
